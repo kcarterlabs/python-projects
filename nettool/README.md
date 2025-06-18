@@ -54,6 +54,18 @@ python cli.py istio
 
 python cli.py istio --analyze --namespace prod
 
+# Basic SSL check
+python cli.py sslcheck example.com
+
+# SSL check on custom port
+python cli.py sslcheck example.com -p 8443
+
+# Skip certificate verification (use with caution!)
+python cli.py sslcheck self-signed.badssl.com --insecure
+
+# Export leaf certificate PEM
+python cli.py sslcheck example.com --export
+
 ### Notes: 
 Some commands (like traceroute or raw socket operations) may require root privileges.
 

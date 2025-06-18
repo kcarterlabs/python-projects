@@ -37,7 +37,7 @@ def main():
     headers_parser = subparsers.add_parser("headers", help="Show HTTP response headers")
     headers_parser.add_argument("url", help="Target URL (e.g., https://example.com)")
 
-# Add a subparser for istio
+    # Add a subparser for istio
     istio_parser = subparsers.add_parser(
     "istio", help="Query Istio Envoy admin stats or run istioctl analyze"
     )
@@ -54,7 +54,12 @@ def main():
     "--namespace", default="default", help="Namespace for istioctl analyze (default: default)"
     )
 
-
+    # add ssl client like script
+    parser_ssl = subparsers.add_parser("sslcheck", help="Check TLS/SSL on a host")
+    parser_ssl.add_argument("host", help="Hostname or IP")
+    parser_ssl.add_argument("-p", "--port", type=int, default=443, help="Port (default: 443)")
+    parser_ssl.add_argument("--insecure", action="store_true", help="Skip cert validation")
+    parser_ssl.add_argument("--export", action="store_true", help="Export leaf certificate to server_cert.pem")
 
     args = parser.parse_args()
     
@@ -75,6 +80,9 @@ def main():
             analyze_istio_config(namespace=args.namespace)
         else:
             envoy_stats(pod_ip=args.pod_ip, port=args.admin_port)
+    elif args.command == "sslcheck":
+        from ssl_tool import ssl_check
+        ssl_check(args.host, args.port, args.insecure, args.export)
     else:
         parser.print_help()
 

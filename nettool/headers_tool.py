@@ -3,7 +3,6 @@
 import requests
 
 def show_headers(url):
-    """Performs an HTTP HEAD request and prints response headers."""
     try:
         print(f"\nFetching headers for: {url}\n")
         response = requests.head(url, allow_redirects=True, timeout=5)
