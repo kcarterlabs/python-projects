@@ -1,5 +1,3 @@
-# headers_tool.py
-
 import requests
 
 def show_headers(url):

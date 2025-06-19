@@ -3,6 +3,7 @@ import ssl
 from datetime import datetime
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend
+from datetime import timezone
 
 def parse_cert(cert_der):
     return x509.load_der_x509_certificate(cert_der, default_backend())
@@ -18,8 +19,8 @@ def print_cert_info(cert, index=None):
 
     print(f"  Subject: {format_name(cert.subject)}")
     print(f"  Issuer: {format_name(cert.issuer)}")
-    print(f"  Valid from: {cert.not_valid_before}")
-    print(f"  Valid until: {cert.not_valid_after}")
+    print(f"  Valid from: {cert.not_valid_before_utc}")
+    print(f"  Valid until: {cert.not_valid_after_utc}")
 
     # Check for wildcard in CN or SANs
     cn = None
@@ -46,7 +47,7 @@ def print_cert_info(cert, index=None):
         print(" No wildcard domains found.")
 
     # Expiry check
-    days_left = (cert.not_valid_after - datetime.utcnow()).days
+    days_left = (cert.not_valid_after_utc- datetime.now(timezone.utc)).days
     print(f"  Days until expiry: {days_left}")
     if days_left < 30:
         print("  ⚠️ Warning: Certificate expires soon!")
@@ -67,7 +68,8 @@ def ssl_check(host, port=443, insecure=False, export=False):
                 print(f"Cipher: {ssock.cipher()}")
 
                 # The full chain DERs
-                der_chain = ssock.get_peer_cert_chain()
+                der = ssock.getpeercert(binary_form=True)
+                der_chain = [der] if der else []
                 if not der_chain:
                     # fallback if get_peer_cert_chain() not available
                     der_chain = [ssock.getpeercert(binary_form=True)]

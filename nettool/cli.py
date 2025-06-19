@@ -9,7 +9,7 @@ from istio_tool import envoy_stats
 from istioctl_tool import analyze_istio_config
 
 def main():
-    parser = argparse.ArgumentParser(description="🛠️ Python Network Debug Tool")
+    parser = argparse.ArgumentParser(description="Python Network Debug Tool")
     subparsers = parser.add_subparsers(dest="command")
 
     # DNS Command
@@ -33,11 +33,11 @@ def main():
     nmap_parser = subparsers.add_parser("nmap", help="Silently scan target")
     nmap_parser.add_argument("target", help="IP or CIDR range to scan")
 
-    # Add a subparser for headers
+    # headers Command
     headers_parser = subparsers.add_parser("headers", help="Show HTTP response headers")
     headers_parser.add_argument("url", help="Target URL (e.g., https://example.com)")
 
-    # Add a subparser for istio
+    # istio Command
     istio_parser = subparsers.add_parser(
     "istio", help="Query Istio Envoy admin stats or run istioctl analyze"
     )
@@ -54,7 +54,7 @@ def main():
     "--namespace", default="default", help="Namespace for istioctl analyze (default: default)"
     )
 
-    # add ssl client like script
+    # s_client command
     parser_ssl = subparsers.add_parser("sslcheck", help="Check TLS/SSL on a host")
     parser_ssl.add_argument("host", help="Hostname or IP")
     parser_ssl.add_argument("-p", "--port", type=int, default=443, help="Port (default: 443)")
